@@ -1,0 +1,3149 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Online Shop - Order Checkout</title>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    background:#e0e5ec;
+    color:#2c3e50;
+    line-height:1.4;
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
+
+header{
+    background:linear-gradient(145deg,#eef3f8,#d8e2ec);
+    padding:0.7rem 1rem;
+    text-align:center;
+    border-radius:0 0 20px 20px;
+    box-shadow:6px 6px 12px #b8bec9,
+               -6px -6px 12px #ffffff;
+    margin-bottom:0.8rem;
+    position:relative;
+}
+
+.header-inner-content{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:900px;
+    margin:auto;
+}
+
+.header-brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:inherit;
+}
+
+.header-title{
+    font-size:1rem;
+    font-weight:800;
+    color:#1e293b;
+}
+
+.utility-icon-btn{
+    position:relative;
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.8);
+    background:linear-gradient(145deg,#eef3f8,#d5dde7);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2563eb;
+    font-size:.85rem;
+    cursor:pointer;
+    box-shadow:4px 4px 8px #b8bec9,
+               -4px -4px 8px #ffffff;
+    text-decoration:none;
+}
+
+.container{
+    max-width:600px;
+    margin:0 auto;
+    padding:0 0.8rem 1rem;
+    flex:1;
+    width:100%;
+}
+
+.checkout-card{
+    background:#e0e5ec;
+    padding:1rem;
+    border-radius:16px;
+    box-shadow:6px 6px 12px #b8bec9,
+               -6px -6px 12px #ffffff;
+    margin-bottom:1rem;
+}
+
+.checkout-title{
+    font-size:1.05rem;
+    font-weight:800;
+    color:#1e293b;
+    margin-bottom:0.6rem;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border-bottom:2px solid rgba(37,99,235,.1);
+    padding-bottom:.3rem;
+}
+
+.form-group{
+    margin-bottom:0.55rem;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:.15rem;
+    font-weight:700;
+    font-size:.78rem;
+    color:#2c3e50;
+}
+
+.form-group input,
+.form-group textarea,
+.address-select{
+    width:100%;
+    padding:.55rem .65rem;
+    background:#e0e5ec;
+    border:none;
+    border-radius:10px;
+    font-size:.85rem;
+    color:#2c3e50;
+    box-shadow:inset 2px 2px 5px #b8bec9,
+               inset -2px -2px 5px #ffffff;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.address-select:focus{
+    box-shadow:inset 2px 2px 5px #b8bec9,
+               inset -2px -2px 5px #ffffff,
+               0 0 0 2px rgba(37,99,235,.18);
+}
+
+.address-select{
+    cursor:pointer;
+}
+
+.address-select:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.delivery-display-box{
+    background:#e0e5ec;
+    padding:8px 10px;
+    border-radius:10px;
+    font-size:.84rem;
+    font-weight:700;
+    color:#2563eb;
+    box-shadow:inset 2px 2px 5px #b8bec9,
+               inset -2px -2px 5px #ffffff;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.qty-control{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#e0e5ec;
+    padding:5px 10px;
+    border-radius:10px;
+    box-shadow:inset 2px 2px 5px #b8bec9,
+               inset -2px -2px 5px #ffffff;
+    width:fit-content;
+}
+
+.qty-btn{
+    width:28px;
+    height:28px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(145deg,#eef3f8,#d7dee7);
+    color:#2563eb;
+    font-size:1rem;
+    font-weight:bold;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:4px 4px 8px #b8bec9,
+               -4px -4px 8px #ffffff;
+    transition:transform .15s ease;
+}
+
+.qty-btn:active{
+    transform:scale(.86);
+    box-shadow:inset 2px 2px 4px #b8bec9,
+               inset -2px -2px 4px #ffffff;
+}
+
+.bill-summary{
+    background:#e0e5ec;
+    padding:8px 12px;
+    border-radius:12px;
+    margin-bottom:0.7rem;
+    box-shadow:inset 2px 2px 5px #b8bec9,
+               inset -2px -2px 5px #ffffff;
+    font-size:.85rem;
+}
+
+.bill-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:4px;
+    color:#475569;
+}
+
+.bill-total{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    color:#2563eb;
+    border-top:1px solid rgba(184,190,201,.7);
+    padding-top:4px;
+    margin-top:4px;
+    font-size:.95rem;
+}
+
+.neumorphic-btn{
+    background:linear-gradient(145deg,#eef3f8,#d7dee7);
+    color:#2563eb;
+    font-size:.88rem;
+    font-weight:bold;
+    padding:10px;
+    border:1px solid rgba(255,255,255,.75);
+    border-radius:12px;
+    cursor:pointer;
+    width:100%;
+    text-align:center;
+    box-shadow:6px 6px 12px #b8bec9,
+               -6px -6px 12px #ffffff;
+    transition:transform .22s ease,
+               box-shadow .22s ease;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.neumorphic-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:8px 8px 16px #b8bec9,
+               -8px -8px 16px #ffffff;
+}
+
+.neumorphic-btn:active{
+    transform:scale(.96);
+    box-shadow:inset 2px 2px 4px #b8bec9,
+               inset -2px -2px 4px #ffffff;
+}
+
+.neumorphic-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.modal{
+    display:flex;
+    position:fixed;
+    inset:0;
+    background:rgba(224,229,236,0);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+    padding:1rem;
+    backdrop-filter:blur(0);
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+
+.modal.active{
+    visibility:visible;
+    opacity:1;
+    pointer-events:auto;
+    background:rgba(224,229,236,.85);
+    backdrop-filter:blur(4px);
+}
+
+.modal-content{
+    background:#e0e5ec;
+    padding:1.2rem;
+    border-radius:14px;
+    max-width:400px;
+    width:100%;
+    position:relative;
+    box-shadow:6px 6px 12px #b8bec9,
+               -6px -6px 12px #ffffff;
+    transform:scale(.8) translateY(20px);
+    opacity:0;
+    transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+
+.modal.active .modal-content{
+    transform:scale(1) translateY(0);
+    opacity:1;
+}
+
+#toastBox{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:#1e293b;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:25px;
+    font-size:.85rem;
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+    transition:transform .3s ease;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    pointer-events:none;
+}
+
+#toastBox.show{
+    transform:translateX(-50%) translateY(0);
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- TOAST -->
+
+<div id="toastBox">
+
+    <i class="fa-solid fa-circle-check"
+       style="color:#10b981">
+    </i>
+
+    <span id="toastMsg">
+        সফল হয়েছে
+    </span>
+
+</div>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <div class="header-inner-content">
+
+        <a href="index.html"
+           class="header-brand">
+
+            <div class="header-title">
+                অর্ডার চেকআউট
+            </div>
+
+        </a>
+
+
+        <a href="index.html"
+           class="utility-icon-btn"
+           title="হোম পেজ">
+
+            <i class="fa-solid fa-house"></i>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="checkout-card">
+
+        <div class="checkout-title">
+
+            <i class="fa-solid fa-bag-shopping"
+               style="color:#2563eb">
+            </i>
+
+            <span>
+                অর্ডার বিবরণ
+            </span>
+
+        </div>
+
+
+        <h3 id="modalProductName"
+            style="
+            margin-bottom:.2rem;
+            font-size:0.98rem;
+            font-weight:700;
+            color:#1e293b;
+            ">
+
+            পণ্য লোড হচ্ছে...
+
+        </h3>
+
+
+        <div id="singleProductInfo"
+             style="
+             display:flex;
+             justify-content:space-between;
+             align-items:center;
+             margin-bottom:.4rem;
+             ">
+
+            <div id="modalProductPrice"
+                 style="
+                 color:#2563eb;
+                 font-weight:800;
+                 font-size:0.9rem;
+                 ">
+
+                ৳ ০
+
+            </div>
+
+
+            <div id="modalStockInfo"
+                 style="
+                 font-size:.75rem;
+                 color:#64748b;
+                 font-weight:bold;
+                 ">
+
+                স্টক: --
+
+            </div>
+
+        </div>
+
+
+        <div style="
+            background:#e0e5ec;
+            padding:6px 8px;
+            border-radius:8px;
+            margin-bottom:0.6rem;
+            box-shadow:inset 2px 2px 5px #b8bec9,
+                       inset -2px -2px 5px #ffffff;
+            font-size:.75rem">
+
+            <p style="
+                font-weight:700;
+                color:#2563eb;
+                margin-bottom:1px">
+
+                <i class="fa-solid fa-circle-info"></i>
+                অর্ডার করার নির্দেশিকা:
+
+            </p>
+
+            <ul style="
+                margin-left:15px;
+                line-height:1.2">
+
+                <li>
+                    সঠিক বিভাগ, জেলা ও উপজেলা নির্বাচন করুন।
+                </li>
+
+                <li>
+                    সঠিক ১১ ডিজিটের সচল মোবাইল নম্বর দিন।
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="form-group"
+             id="qtyGroupContainer">
+
+            <label>
+                পরিমাণ (Quantity)
+            </label>
+
+
+            <div class="qty-control">
+
+                <button
+                    class="qty-btn"
+                    type="button"
+                    id="minusQtyBtn">
+
+                    -
+
+                </button>
+
+
+                <span
+                    id="orderQtyVal"
+                    style="font-weight:bold; font-size:0.9rem;">
+
+                    1
+
+                </span>
+
+
+                <button
+                    class="qty-btn"
+                    type="button"
+                    id="plusQtyBtn">
+
+                    +
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <form id="orderForm">
+
+
+            <!-- DIVISION -->
+
+            <div class="form-group">
+
+                <label>
+                    বিভাগ (Division)
+                </label>
+
+
+                <select
+                    id="selectDivision"
+                    class="address-select"
+                    required>
+
+                    <option value="">
+                        বিভাগ সিলেক্ট করুন
+                    </option>
+
+                    <option value="Dhaka">
+                        ঢাকা (Dhaka)
+                    </option>
+
+                    <option value="Chattogram">
+                        চট্টগ্রাম (Chattogram)
+                    </option>
+
+                    <option value="Rajshahi">
+                        রাজশাহী (Rajshahi)
+                    </option>
+
+                    <option value="Khulna">
+                        খুলনা (Khulna)
+                    </option>
+
+                    <option value="Barishal">
+                        বরিশাল (Barishal)
+                    </option>
+
+                    <option value="Sylhet">
+                        সিলেট (Sylhet)
+                    </option>
+
+                    <option value="Rangpur">
+                        রংপুর (Rangpur)
+                    </option>
+
+                    <option value="Mymensingh">
+                        ময়মনসিংহ (Mymensingh)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DISTRICT -->
+
+            <div class="form-group">
+
+                <label>
+                    জেলা (District)
+                </label>
+
+
+                <select
+                    id="selectDistrict"
+                    class="address-select"
+                    required
+                    disabled>
+
+                    <option value="">
+                        প্রথমে বিভাগ সিলেক্ট করুন
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- UPAZILA -->
+
+            <div class="form-group">
+
+                <label>
+                    উপজেলা / থানা
+                </label>
+
+
+                <select
+                    id="selectUpazila"
+                    class="address-select"
+                    required
+                    disabled>
+
+                    <option value="">
+                        প্রথমে জেলা সিলেক্ট করুন
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- EXACT ADDRESS -->
+
+            <div class="form-group">
+
+                <label>
+                    বাড়ির এক্সাক্ট ঠিকানা
+                </label>
+
+                <textarea id="exactAddress" rows="1" required placeholder="যেমন: বাসা নং ১২, রোড নং ০৫, গ্রাম/মহল্লা..." style="resize: none;"></textarea>
+
+            </div>
+
+
+            <!-- DELIVERY -->
+
+            <div class="form-group">
+
+                <label>
+                    ডেলিভারি এলাকা ও চার্জ
+                </label>
+
+
+                <div
+                    class="delivery-display-box"
+                    id="deliveryDisplayBox">
+
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+
+                    <span id="deliveryAreaText">
+                        ঠিকানা সিলেক্ট করুন
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- BILL -->
+
+            <div class="bill-summary">
+
+                <div class="bill-row">
+
+                    <span>
+                        পণ্যের মূল্য:
+                    </span>
+
+                    <span id="summarySubtotal">
+                        ৳ ০
+                    </span>
+
+                </div>
+
+
+                <div class="bill-row">
+
+                    <span>
+                        ডেলিভারি চার্জ:
+                    </span>
+
+                    <span id="summaryDeliveryFee">
+                        ৳ ০
+                    </span>
+
+                </div>
+
+
+                <div class="bill-total">
+
+                    <span>
+                        মোট প্রদেয়:
+                    </span>
+
+                    <span id="summaryGrandTotal">
+                        ৳ ০
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOMER NAME -->
+
+            <div class="form-group">
+
+                <label>
+                    আপনার নাম
+                </label>
+
+
+                <input
+                    type="text"
+                    id="custName"
+                    required
+                    placeholder="আপনার পূর্ণ নাম লিখুন">
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group" style="margin-bottom: 0.8rem;">
+
+                <label>
+                    মোবাইল নম্বর (১১ ডিজিট)
+                </label>
+
+
+                <input
+                    type="tel"
+                    id="custPhone"
+                    required
+                    pattern="01[0-9]{9}"
+                    placeholder="017xxxxxxxx">
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="submitOrderBtn"
+                class="neumorphic-btn">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+                পরবর্তী ধাপ (পেমেন্ট)
+
+            </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- SUCCESS MODAL -->
+
+<div
+    class="modal"
+    id="successOrderModal">
+
+    <div
+        class="modal-content"
+        style="text-align:center">
+
+        <i
+            class="fa-solid fa-circle-check"
+            style="
+            font-size:2.2rem;
+            color:#10b981;
+            margin-bottom:.6rem">
+        </i>
+
+
+        <h3
+            style="
+            font-size:1rem;
+            color:#1e293b;
+            margin-bottom:.3rem">
+
+            অর্ডার সফল হয়েছে!
+
+        </h3>
+
+
+        <p
+            style="
+            font-size:.8rem;
+            color:#64748b">
+
+            আপনার ট্র্যাকিং কোডটি সংগ্রহ করুন:
+
+        </p>
+
+
+        <div
+            id="generatedTrackingCode"
+            style="
+            background:#e0e5ec;
+            padding:8px;
+            border-radius:8px;
+            font-weight:bold;
+            color:#2563eb;
+            margin:0.8rem 0;
+            box-shadow:inset 2px 2px 5px #b8bec9,
+                       inset -2px -2px 5px #ffffff;
+            user-select:all">
+        </div>
+
+
+        <div
+            style="
+            display:flex;
+            gap:8px;
+            flex-direction:column">
+
+            <a
+                href="track.html"
+                class="neumorphic-btn">
+
+                <i class="fa-solid fa-truck-fast"></i>
+
+                ট্র্যাকিং দেখুন
+
+            </a>
+
+
+            <a
+                href="index.html"
+                class="neumorphic-btn"
+                style="color:#64748b">
+
+                <i class="fa-solid fa-house"></i>
+
+                হোম পেজ
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+
+<script>
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyB4t_odwE4-Xy04VBbftdO4vL3dykK7WE",
+
+    authDomain:
+        "save-9a2b1.firebaseapp.com",
+
+    databaseURL:
+        "https://save-9a2b1-default-rtdb.firebaseio.com",
+
+    projectId:
+        "save-9a2b1",
+
+    storageBucket:
+        "save-9a2b1.firebasestorage.app",
+
+    messagingSenderId:
+        "764677352870",
+
+    appId:
+        "1:764677352870:web:64574453e074a30a843367",
+
+    measurementId:
+        "G-KV0WQWZY0H"
+};
+
+
+if(!firebase.apps.length){
+
+    firebase.initializeApp(
+        firebaseConfig
+    );
+}
+
+
+const db =
+    firebase.database();
+
+
+/* =========================================================
+   CACHE
+========================================================= */
+
+const DELIVERY_CACHE_KEY =
+    "online_shop_delivery_cache";
+
+const DELIVERY_CACHE_TIME_KEY =
+    "online_shop_delivery_cache_time";
+
+const DELIVERY_CACHE_DURATION =
+    5 * 60 * 1000;
+
+
+/* =========================================================
+   ADDRESS DATABASE
+========================================================= */
+
+const addressDatabase = {
+
+    "Dhaka":{
+
+        "ঢাকা":[
+            "ঢাকা সদর",
+            "তেজগাঁও",
+            "ধানমন্ডি",
+            "গুলশান",
+            "উত্তরা",
+            "মিরপুর",
+            "সাভার",
+            "ধামরাই",
+            "কেরানীগঞ্জ",
+            "নবাবগঞ্জ",
+            "দোহার"
+        ],
+
+        "গাজীপুর":[
+            "গাজীপুর সদর",
+            "কালিয়াকৈর",
+            "কাপাসিয়া",
+            "শ্রীপুর",
+            "কালীগঞ্জ"
+        ],
+
+        "নারায়ণগঞ্জ":[
+            "নারায়ণগঞ্জ সদর",
+            "রূপগঞ্জ",
+            "সোনারগাঁ",
+            "আড়াইহাজার",
+            "বন্দর"
+        ],
+
+        "মানিকগঞ্জ":[
+            "মানিকগঞ্জ সদর",
+            "সিঙ্গাইর",
+            "সাটুরিয়া",
+            "ঘিওর",
+            "শিবালয়",
+            "হরিরামপুর"
+        ],
+
+        "মুন্সিগঞ্জ":[
+            "মুন্সিগঞ্জ সদর",
+            "শ্রীনগর",
+            "সিরাজদিখান",
+            "লৌহজং",
+            "টঙ্গিবাড়ী",
+            "গজারিয়া"
+        ],
+
+        "নরসিংদী":[
+            "নরসিংদী সদর",
+            "বেলাবো",
+            "মনোহরদী",
+            "পলাশ",
+            "রায়পুরা",
+            "শিবপুর"
+        ],
+
+        "ফরিদপুর":[
+            "ফরিদপুর সদর",
+            "বোয়ালমারী",
+            "আলফাডাঙ্গা",
+            "মধুখালী",
+            "ভাঙ্গা",
+            "চরভদ্রাসন",
+            "সদরপুর",
+            "সালথা"
+        ],
+
+        "গোপালগঞ্জ":[
+            "গোপালগঞ্জ সদর",
+            "কাশিয়ানি",
+            "কোটালীপাড়া",
+            "টুঙ্গিপাড়া",
+            "মুকসুদপুর"
+        ],
+
+        "মাদারীপুর":[
+            "মাদারীপুর সদর",
+            "শিবচর",
+            "কালকিনি",
+            "রাজৈর"
+        ],
+
+        "রাজবাড়ী":[
+            "রাজবাড়ী সদর",
+            "পাংশা",
+            "বালিয়াকান্দি",
+            "কালুখালী",
+            "গোয়ালন্দ"
+        ],
+
+        "শরীয়তপুর":[
+            "শরীয়তপুর সদর",
+            "নড়িয়া",
+            "জাজিরা",
+            "গোসাইরহাট",
+            "ভেদরগঞ্জ",
+            "ডামুড্যা"
+        ],
+
+        "কিশোরগঞ্জ":[
+            "কিশোরগঞ্জ সদর",
+            "হোসেনপুর",
+            "পাকুন্দিয়া",
+            "কটিয়াদি",
+            "করিমগঞ্জ",
+            "তাড়াইল",
+            "বাজিতপুর",
+            "নিকলী",
+            "অষ্টগ্রাম",
+            "ইটনা",
+            "মিঠামইন",
+            "ভৈরব"
+        ],
+
+        "টাঙ্গাইল":[
+            "টাঙ্গাইল সদর",
+            "ঘাটাইল",
+            "মির্জাপুর",
+            "সখিপুর",
+            "বাসাইল",
+            "কালিহাতী",
+            "দেলদুয়ার",
+            "ভুয়াপুর",
+            "নাগরপুর",
+            "মধুপুর",
+            "ধনবাড়ী"
+        ]
+    },
+
+
+    "Chattogram":{
+
+        "চট্টগ্রাম":[
+            "কোতোয়ালি",
+            "পাহাড়তলী",
+            "খুলশী",
+            "ডবলমুরিং",
+            "পতেঙ্গা",
+            "বায়েজিদ",
+            "হালিশহর",
+            "হাটহাজারী",
+            "পটিয়া",
+            "সীতাকুণ্ড",
+            "মিরসরাই",
+            "সন্দ্বীপ",
+            "আনোয়ারা",
+            "বোয়ালখালী",
+            "চন্দনাইশ",
+            "সাতকানিয়া",
+            "লোহাগাড়া",
+            "বাঁশখালী",
+            "রাউজান",
+            "রাঙ্গুনিয়া",
+            "ফটিকছড়ি"
+        ],
+
+        "কক্সবাজার":[
+            "কক্সবাজার সদর",
+            "রামু",
+            "উখিয়া",
+            "টেকনাফ",
+            "চকরিয়া",
+            "মহেশখালী",
+            "পেকুয়া",
+            "কুতুবদিয়া"
+        ],
+
+        "কুমিল্লা":[
+            "কুমিল্লা সদর",
+            "চান্দিনা",
+            "দাউদকান্দি",
+            "ব্রাহ্মণপাড়া",
+            "বুড়িচং",
+            "চৌদ্দগ্রাম",
+            "লাকসাম",
+            "মনোহরগঞ্জ",
+            "মেঘনা",
+            "তিতাস",
+            "হোমনা",
+            "মুরাদনগর",
+            "নাঙ্গলকোট"
+        ],
+
+        "ব্রাহ্মণবাড়িয়া":[
+            "ব্রাহ্মণবাড়িয়া সদর",
+            "কসবা",
+            "নাসিরনগর",
+            "সরাইল",
+            "আশুগঞ্জ",
+            "আখাউড়া",
+            "নবীনগর",
+            "বাঞ্ছারামপুর",
+            "বিজয়নগর"
+        ],
+
+        "চাঁদপুর":[
+            "চাঁদপুর সদর",
+            "হাজীগঞ্জ",
+            "কচুয়া",
+            "শাহরাস্তি",
+            "ফরিদগঞ্জ",
+            "মতলব উত্তর",
+            "মতলব দক্ষিণ",
+            "হাইমচর"
+        ],
+
+        "নোয়াখালী":[
+            "নোয়াখালী সদর",
+            "কোম্পানীগঞ্জ",
+            "বেগমগঞ্জ",
+            "চাটখিল",
+            "সেনবাগ",
+            "সুবর্ণচর",
+            "কবিরহাট",
+            "হাতিয়া",
+            "সোনাইমুড়ি"
+        ],
+
+        "ফেনী":[
+            "ফেনী সদর",
+            "দাগনভূঞা",
+            "সোনাগাজী",
+            "ফুলগাজী",
+            "পরশুরাম",
+            "ছাগলনাইয়া"
+        ],
+
+        "লক্ষ্মীপুর":[
+            "লক্ষ্মীপুর সদর",
+            "রায়পুর",
+            "রামগঞ্জ",
+            "কমলনগর",
+            "রামগতি"
+        ],
+
+        "খাগড়াছড়ি":[
+            "খাগড়াছড়ি সদর",
+            "দীঘিনালা",
+            "পানছড়ি",
+            "লক্ষ্মীছড়ি",
+            "মহালছড়ি",
+            "মাটিরাঙ্গা",
+            "রামগড়",
+            "মানিকছড়ি",
+            "গুইমারা"
+        ],
+
+        "রাঙ্গামাটি":[
+            "রাঙ্গামাটি সদর",
+            "কাপ্তাই",
+            "কাউখালী",
+            "বাঘাইছড়ি",
+            "বরকল",
+            "লংগদু",
+            "নানিয়ারচর",
+            "জুরাছড়ি",
+            "রাজস্থলী",
+            "বেলাইছড়ি"
+        ],
+
+        "বান্দরবান":[
+            "বান্দরবান সদর",
+            "আলীকদম",
+            "নাইক্ষ্যংছড়ি",
+            "রোয়াংছড়ি",
+            "লামা",
+            "রুমা",
+            "থানচি"
+        ]
+    },
+
+
+    "Rajshahi":{
+
+        "রাজশাহী":[
+            "বোয়ালিয়া",
+            "মতিহার",
+            "রাজপাড়া",
+            "শাহ মখদুম",
+            "পবা",
+            "চারঘাট",
+            "বাঘা",
+            "তানোর",
+            "মোহনপুর",
+            "দুর্গাপুর",
+            "গোদাগাড়ী"
+        ],
+
+        "বগুড়া":[
+            "বগুড়া সদর",
+            "শাজাহানপুর",
+            "শেরপুর",
+            "শিবগঞ্জ",
+            "সোনাতলা",
+            "গাবতলী",
+            "ধুনট",
+            "সারিয়াকান্দি",
+            "কাহালু",
+            "নন্দীগ্রাম",
+            "আদমদীঘি",
+            "দুপচাঁচিয়া"
+        ],
+
+        "পাবনা":[
+            "পাবনা সদর",
+            "ঈশ্বরদী",
+            "চাটমোহর",
+            "সুজানগর",
+            "বেড়া",
+            "আটঘরিয়া",
+            "ভাঙ্গুড়া",
+            "ফরিদপুর",
+            "সাঁথিয়া"
+        ],
+
+        "সিরাজগঞ্জ":[
+            "সিরাজগঞ্জ সদর",
+            "কাজিপুর",
+            "উল্লাপাড়া",
+            "শাহজাদপুর",
+            "রায়গঞ্জ",
+            "তাড়াশ",
+            "বেলকুচি",
+            "চৌহালি",
+            "কামারখন্দ"
+        ],
+
+        "নাটোর":[
+            "নাটোর সদর",
+            "বাগাতিপাড়া",
+            "বড়াইগ্রাম",
+            "গুরুদাসপুর",
+            "লালপুর",
+            "সিংড়া",
+            "নলডাঙ্গা"
+        ],
+
+        "নওগাঁ":[
+            "নওগাঁ সদর",
+            "মহাদেবপুর",
+            "মান্দা",
+            "পোরশা",
+            "বদলগাছী",
+            "নিয়ামতপুর",
+            "আত্রাই",
+            "রানীনগর",
+            "সাপাহার",
+            "পত্নীতলা",
+            "ধামইরহাট"
+        ],
+
+        "চাঁপাইনবাবগঞ্জ":[
+            "চাঁপাইনবাবগঞ্জ সদর",
+            "গোমস্তাপুর",
+            "নাচোল",
+            "ভোলাহাট",
+            "শিবগঞ্জ"
+        ],
+
+        "জয়পুরহাট":[
+            "জয়পুরহাট সদর",
+            "আক্কেলপুর",
+            "কালাই",
+            "ক্ষেতলাল",
+            "পাঁচবিবি"
+        ]
+    },
+
+
+    "Khulna":{
+
+        "খুলনা":[
+            "সোনাডাঙ্গা",
+            "খালিশপুর",
+            "দৌলতপুর",
+            "খানজাহান আলী",
+            "হরিণটানা",
+            "বটিয়াঘাটা",
+            "রূপসা",
+            "তেরখাদা",
+            "দিঘলিয়া",
+            "পাইকগাছা",
+            "ডুমুরিয়া",
+            "কয়রা"
+        ],
+
+        "যশোর":[
+            "যশোর সদর",
+            "অভয়নগর",
+            "কেশবপুর",
+            "ঝিকরগাছা",
+            "শার্শা",
+            "বাঘারপাড়া",
+            "মণিরামপুর",
+            "চৌগাছা"
+        ],
+
+        "সাতক্ষীরা":[
+            "সাতক্ষীরা সদর",
+            "কলারোয়া",
+            "তালা",
+            "দেবহাটা",
+            "কালীগঞ্জ",
+            "শ্যামনগর",
+            "আশাশুনি"
+        ],
+
+        "মেহেরপুর":[
+            "মেহেরপুর সদর",
+            "গাংনি",
+            "মুজিবনগর"
+        ],
+
+        "নড়াইল":[
+            "নড়াইল সদর",
+            "লোহাগড়া",
+            "কালিয়া"
+        ],
+
+        "চুয়াডাঙ্গা":[
+            "চুয়াডাঙ্গা সদর",
+            "আলমডাঙ্গা",
+            "দামুড়হুদা",
+            "জীবননগর"
+        ],
+
+        "কুষ্টিয়া":[
+            "কুষ্টিয়া সদর",
+            "কুমারখালী",
+            "খোকসা",
+            "মিরপুর",
+            "দৌলতপুর",
+            "ভেড়ামারা"
+        ],
+
+        "মাগুরা":[
+            "মাগুরা সদর",
+            "শ্রীপুর",
+            "মহম্মদপুর",
+            "শালিখা"
+        ],
+
+        "বাগেরহাট":[
+            "বাগেরহাট সদর",
+            "মংলা",
+            "মোরেলগঞ্জ",
+            "শরণখোলা",
+            "চিতলমারী",
+            "ফকিরহাট",
+            "রামপাল",
+            "কচুয়া",
+            "মোল্লাহাট"
+        ],
+
+        "ঝিনাইদহ":[
+            "ঝিনাইদহ সদর",
+            "শৈলকুপা",
+            "হরিণাকুন্ডু",
+            "কালীগঞ্জ",
+            "কোটচাঁদপুর",
+            "মহেশপুর"
+        ]
+    },
+
+
+    "Barishal":{
+
+        "বরিশাল":[
+            "বরিশাল সদর",
+            "বাবুগঞ্জ",
+            "উজিরপুর",
+            "মেহেন্দিগঞ্জ",
+            "বাকেরগঞ্জ",
+            "হিজলা",
+            "বানারীপাড়া",
+            "গৌরনদী",
+            "আগৈলঝাড়া",
+            "মুলাদী"
+        ],
+
+        "পটুয়াখালী":[
+            "পটুয়াখালী সদর",
+            "বাউফল",
+            "গলাচিপা",
+            "কলাপাড়া",
+            "দশমিনা",
+            "মির্জাগঞ্জ",
+            "রাঙ্গাবালী",
+            "দুমকি"
+        ],
+
+        "ভোলা":[
+            "ভোলা সদর",
+            "বোরহানউদ্দিন",
+            "চরফ্যাশন",
+            "দৌলতখান",
+            "লালমোহন",
+            "তাজুমুদ্দিন",
+            "মনপুরা"
+        ],
+
+        "পিরোজপুর":[
+            "পিরোজপুর সদর",
+            "নাজিরপুর",
+            "কাউখালী",
+            "জিয়ানগর",
+            "ভাণ্ডারিয়া",
+            "মঠবাড়িয়া",
+            "নেছারাবাদ"
+        ],
+
+        "ঝালকাঠি":[
+            "ঝালকাঠি সদর",
+            "নলছিটি",
+            "কাঠালিয়া",
+            "রাজাপুর"
+        ],
+
+        "বরগুনা":[
+            "বরগুনা সদর",
+            "আমতলী",
+            "বেতাগী",
+            "বামনা",
+            "পাথরঘাটা",
+            "তালতলী"
+        ]
+    },
+
+
+    "Sylhet":{
+
+        "সিলেট":[
+            "সিলেট সদর",
+            "কোতোয়ালি",
+            "দক্ষিণ সুরমা",
+            "বিশ্বনাথ",
+            "গোলাপগঞ্জ",
+            "বিয়ানীবাজার",
+            "জকিগঞ্জ",
+            "কানাইঘাট",
+            "কোম্পানীগঞ্জ",
+            "ফেঞ্চুগঞ্জ",
+            "গোয়াইনঘাট",
+            "জৈন্তাপুর"
+        ],
+
+        "মৌলভীবাজার":[
+            "মৌলভীবাজার সদর",
+            "শ্রীমঙ্গল",
+            "কমলগঞ্জ",
+            "কুলাউড়া",
+            "বড়লেখা",
+            "রাজনগর",
+            "জুড়ী"
+        ],
+
+        "হবিগঞ্জ":[
+            "হবিগঞ্জ সদর",
+            "নবীগঞ্জ",
+            "বাহুবল",
+            "চুনারুঘাট",
+            "মাধবপুর",
+            "আজমিরীগঞ্জ",
+            "বানিয়াচং",
+            "লাখাই",
+            "শায়েস্তাগঞ্জ"
+        ],
+
+        "সুনামগঞ্জ":[
+            "সুনামগঞ্জ সদর",
+            "দক্ষিণ সুনামগঞ্জ",
+            "বিশ্বম্ভরপুর",
+            "ছাতক",
+            "দোয়ারাবাজার",
+            "জগন্নাথপুর",
+            "তাহিরপুর",
+            "ধর্মপাশা",
+            "শাল্লা",
+            "দিরাই",
+            "মধ্যনগর"
+        ]
+    },
+
+
+    "Rangpur":{
+
+        "রংপুর":[
+            "রংপুর সদর",
+            "বদরগঞ্জ",
+            "তারাগঞ্জ",
+            "কাউনিয়া",
+            "পীরগঞ্জ",
+            "পীরগাছা",
+            "মিঠাপুকুর"
+        ],
+
+        "দিনাজপুর":[
+            "দিনাজপুর সদর",
+            "বিরামপুর",
+            "বীরগঞ্জ",
+            "পার্বতীপুর",
+            "ফুলবাড়ী",
+            "ঘোড়াঘাট",
+            "হাকিমপুর",
+            "কাহারোল",
+            "খানসামা",
+            "নবাবগঞ্জ",
+            "চিরিরবন্দর"
+        ],
+
+        "গাইবান্ধা":[
+            "গাইবান্ধা সদর",
+            "ফুলছড়ি",
+            "সাঘাটা",
+            "সাদুল্লাপুর",
+            "গোবিন্দগঞ্জ",
+            "পলাশবাড়ী",
+            "সুন্দরগঞ্জ"
+        ],
+
+        "কুড়িগ্রাম":[
+            "কুড়িগ্রাম সদর",
+            "নাগেশ্বরী",
+            "ভুরুঙ্গামারী",
+            "ফুলবাড়ী",
+            "রাজারহাট",
+            "উলিপুর",
+            "চিলমারী",
+            "রৌমারী",
+            "চর রাজিবপুর"
+        ],
+
+        "লালমনিরহাট":[
+            "লালমনিরহাট সদর",
+            "হাতীবান্ধা",
+            "পাটগ্রাম",
+            "কালীগঞ্জ",
+            "আদিতমারী"
+        ],
+
+        "নীলফামারী":[
+            "নীলফামারী সদর",
+            "সৈয়দপুর",
+            "জলঢাকা",
+            "কিশোরগঞ্জ",
+            "ডোমার",
+            "ডিমলা"
+        ],
+
+        "পঞ্চগড়":[
+            "পঞ্চগড় সদর",
+            "বোদা",
+            "দেবীগঞ্জ",
+            "আটোয়ারী",
+            "তেঁতুলিয়া"
+        ],
+
+        "ঠাকুরগাঁও":[
+            "ঠাকুরগাঁও সদর",
+            "বালিয়াডাঙ্গী",
+            "হরিপুর",
+            "পীরগঞ্জ",
+            "রাণীশংকৈল"
+        ]
+    },
+
+
+    "Mymensingh":{
+
+        "ময়মনসিংহ":[
+            "ময়মনসিংহ সদর",
+            "ভালুকা",
+            "ত্রিশাল",
+            "মুক্তাগাছা",
+            "ফুলপুর",
+            "হালুয়াঘাট",
+            "গফরগাঁও",
+            "ঈশ্বরগঞ্জ",
+            "নান্দাইল",
+            "ফুলবাড়িয়া",
+            "তারাকান্দা",
+            "ধোবাউড়া"
+        ],
+
+        "জামালপুর":[
+            "জামালপুর সদর",
+            "মেলান্দহ",
+            "ইসলামপুর",
+            "বকশীগঞ্জ",
+            "দেওয়ানগঞ্জ",
+            "সরিষাবাড়ি",
+            "মাদারগঞ্জ"
+        ],
+
+        "নেত্রকোণা":[
+            "নেত্রকোণা সদর",
+            "আটপাড়া",
+            "বারহাট্টা",
+            "দুর্গাপুর",
+            "কলমাকান্দা",
+            "কেন্দুয়া",
+            "মদন",
+            "মোহনগঞ্জ",
+            "পূর্বধলা",
+            "খালিয়াজুরি"
+        ],
+
+        "শেরপুর":[
+            "শেরপুর সদর",
+            "নকলা",
+            "নালিতাবাড়ী",
+            "ঝিনাইগাতী",
+            "শ্রীবরদী"
+        ]
+    }
+
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let deliveryChargesList = [];
+
+let deliveryListenerStarted = false;
+
+let productLoadFinished = false;
+
+let submittingOrder = false;
+
+let currentOrderData = {
+
+    id:null,
+
+    name:"",
+
+    priceNum:0,
+
+    priceText:"৳ ০",
+
+    qty:1,
+
+    stock:0,
+
+    selectedFee:0,
+
+    selectedAreaName:""
+
+};
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(msg){
+
+    const toast =
+        document.getElementById(
+            "toastBox"
+        );
+
+    document.getElementById(
+        "toastMsg"
+    ).innerText = msg;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function(){
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
+        );
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+function parseNumericPrice(priceStr){
+
+    if(!priceStr){
+        return 0;
+    }
+
+
+    const cleaned =
+        String(priceStr)
+            .replace(/[^\d.]/g,"");
+
+
+    return parseFloat(cleaned) || 0;
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+function safeNumber(value){
+
+    const n =
+        parseInt(
+            value,
+            10
+        );
+
+    return Number.isFinite(n)
+        ? Math.max(0,n)
+        : 0;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(modalId){
+
+    document
+        .getElementById(modalId)
+        .classList.add(
+            "active"
+        );
+}
+
+
+/* =========================================================
+   GET BUY NOW ID
+========================================================= */
+
+function getBuyNowId(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    return params.get(
+        "buyNowId"
+    );
+}
+
+
+/* =========================================================
+   LOAD PRODUCT
+========================================================= */
+
+async function setupCheckoutPage(){
+
+    const buyNowId =
+        getBuyNowId();
+
+
+    if(!buyNowId){
+
+        document.getElementById(
+            "modalProductName"
+        ).innerText =
+            "কোনো পণ্য পাওয়া যায়নি!";
+
+        disableCheckout();
+
+        return;
+    }
+
+
+    try{
+
+        const snapshot =
+            await db
+                .ref(
+                    "products/" +
+                    buyNowId
+                )
+                .once("value");
+
+
+        const prod =
+            snapshot.val();
+
+
+        if(!prod){
+
+            document.getElementById(
+                "modalProductName"
+            ).innerText =
+                "পণ্যটি ডাটাবেজে পাওয়া যায়নি!";
+
+            disableCheckout();
+
+            return;
+        }
+
+
+        const stock =
+            safeNumber(
+                prod.stock
+            );
+
+
+        if(stock <= 0){
+
+            currentOrderData = {
+
+                id:String(buyNowId),
+
+                name:
+                    prod.name ||
+                    "পণ্য",
+
+                priceNum:
+                    parseNumericPrice(
+                        prod.price
+                    ),
+
+                priceText:
+                    prod.price ||
+                    "৳ ০",
+
+                qty:0,
+
+                stock:0,
+
+                selectedFee:0,
+
+                selectedAreaName:""
+
+            };
+
+
+            document.getElementById(
+                "modalProductName"
+            ).innerText =
+                prod.name ||
+                "পণ্য";
+
+
+            document.getElementById(
+                "modalProductPrice"
+            ).innerText =
+                prod.price ||
+                "৳ ০";
+
+
+            document.getElementById(
+                "modalStockInfo"
+            ).innerText =
+                "স্টক আউট";
+
+
+            document.getElementById(
+                "orderQtyVal"
+            ).innerText =
+                "0";
+
+
+            disableCheckout();
+
+            showToast(
+                "দুঃখিত, পণ্যটি বর্তমানে স্টক আউট!"
+            );
+
+            return;
+        }
+
+
+        currentOrderData = {
+
+            id:String(buyNowId),
+
+            name:
+                prod.name ||
+                "পণ্য",
+
+            priceNum:
+                parseNumericPrice(
+                    prod.price
+                ),
+
+            priceText:
+                prod.price ||
+                "৳ ০",
+
+            qty:1,
+
+            stock:stock,
+
+            selectedFee:0,
+
+            selectedAreaName:""
+
+        };
+
+
+        document.getElementById(
+            "modalProductName"
+        ).innerText =
+            currentOrderData.name;
+
+
+        document.getElementById(
+            "modalProductPrice"
+        ).innerText =
+            currentOrderData.priceText;
+
+
+        document.getElementById(
+            "modalStockInfo"
+        ).innerText =
+            "স্টক: " +
+            stock +
+            " টি";
+
+
+        document.getElementById(
+            "orderQtyVal"
+        ).innerText =
+            "1";
+
+
+        productLoadFinished =
+            true;
+
+
+        updateOrderBillSummary();
+
+
+    }catch(error){
+
+        console.error(
+            "Product load error:",
+            error
+        );
+
+
+        document.getElementById(
+            "modalProductName"
+        ).innerText =
+            "পণ্য লোড করা যায়নি!";
+
+
+        disableCheckout();
+
+
+        showToast(
+            "পণ্য লোড করতে সমস্যা হয়েছে!"
+        );
+    }
+}
+
+
+/* =========================================================
+   DISABLE CHECKOUT
+========================================================= */
+
+function disableCheckout(){
+
+    document.getElementById(
+        "minusQtyBtn"
+    ).disabled = true;
+
+
+    document.getElementById(
+        "plusQtyBtn"
+    ).disabled = true;
+
+
+    document.getElementById(
+        "submitOrderBtn"
+    ).disabled = true;
+}
+
+
+/* =========================================================
+   ENABLE CHECKOUT
+========================================================= */
+
+function enableCheckout(){
+
+    document.getElementById(
+        "minusQtyBtn"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "plusQtyBtn"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "submitOrderBtn"
+    ).disabled = false;
+}
+
+
+/* =========================================================
+   DISTRICTS
+========================================================= */
+
+function loadDistricts(){
+
+    const division =
+        document.getElementById(
+            "selectDivision"
+        ).value;
+
+
+    const districtSelect =
+        document.getElementById(
+            "selectDistrict"
+        );
+
+
+    const upazilaSelect =
+        document.getElementById(
+            "selectUpazila"
+        );
+
+
+    districtSelect.innerHTML =
+        '<option value="">জেলা সিলেক্ট করুন</option>';
+
+
+    upazilaSelect.innerHTML =
+        '<option value="">প্রথমে জেলা সিলেক্ট করুন</option>';
+
+
+    upazilaSelect.disabled =
+        true;
+
+
+    if(
+        division &&
+        addressDatabase[division]
+    ){
+
+        districtSelect.disabled =
+            false;
+
+
+        Object.keys(
+            addressDatabase[division]
+        ).forEach(
+            district => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    district;
+
+                option.textContent =
+                    district;
+
+                districtSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+    }else{
+
+        districtSelect.disabled =
+            true;
+    }
+
+
+    checkAddressForAutoDelivery();
+}
+
+
+/* =========================================================
+   UPAZILAS
+========================================================= */
+
+function loadUpazilas(){
+
+    const division =
+        document.getElementById(
+            "selectDivision"
+        ).value;
+
+
+    const district =
+        document.getElementById(
+            "selectDistrict"
+        ).value;
+
+
+    const upazilaSelect =
+        document.getElementById(
+            "selectUpazila"
+        );
+
+
+    upazilaSelect.innerHTML =
+        '<option value="">উপজেলা/থানা সিলেক্ট করুন</option>';
+
+
+    if(
+        district &&
+        addressDatabase[division] &&
+        addressDatabase[division][district]
+    ){
+
+        upazilaSelect.disabled =
+            false;
+
+
+        addressDatabase[division][district]
+            .forEach(
+                upazila => {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        upazila;
+
+                    option.textContent =
+                        upazila;
+
+                    upazilaSelect.appendChild(
+                        option
+                    );
+                }
+            );
+
+    }else{
+
+        upazilaSelect.disabled =
+            true;
+    }
+
+
+    checkAddressForAutoDelivery();
+}
+
+
+/* =========================================================
+   DELIVERY MATCH
+========================================================= */
+
+function checkAddressForAutoDelivery(){
+
+    const divisionVal =
+        document.getElementById(
+            "selectDivision"
+        ).value;
+
+
+    const districtVal =
+        document.getElementById(
+            "selectDistrict"
+        ).value;
+
+
+    const upazilaVal =
+        document.getElementById(
+            "selectUpazila"
+        ).value;
+
+
+    const deliveryTextElem =
+        document.getElementById(
+            "deliveryAreaText"
+        );
+
+
+    if(
+        !divisionVal ||
+        !districtVal ||
+        !upazilaVal ||
+        deliveryChargesList.length === 0
+    ){
+
+        deliveryTextElem.innerText =
+            "ঠিকানা সিলেক্ট করুন";
+
+
+        currentOrderData.selectedFee =
+            0;
+
+
+        currentOrderData.selectedAreaName =
+            "";
+
+
+        updateOrderBillSummary();
+
+        return;
+    }
+
+
+    const targetKeyword =
+        divisionVal === "Dhaka"
+            ? "ঢাকার ভিতরে"
+            : "ঢাকার বাইরে";
+
+
+    let matchedIndex = -1;
+
+
+    deliveryChargesList.forEach(
+        (item,index) => {
+
+            if(
+                item.area &&
+                (
+                    item.area.includes(
+                        targetKeyword
+                    ) ||
+                    (
+                        divisionVal !== "Dhaka" &&
+                        item.area.includes(
+                            "বাইরে"
+                        )
+                    )
+                )
+            ){
+
+                matchedIndex =
+                    index;
+            }
+        }
+    );
+
+
+    if(
+        matchedIndex === -1 &&
+        deliveryChargesList.length > 0
+    ){
+
+        matchedIndex = 0;
+    }
+
+
+    if(
+        matchedIndex !== -1 &&
+        deliveryChargesList[matchedIndex]
+    ){
+
+        const selectedObj =
+            deliveryChargesList[
+                matchedIndex
+            ];
+
+
+        currentOrderData.selectedFee =
+            parseFloat(
+                selectedObj.fee
+            ) || 0;
+
+
+        currentOrderData.selectedAreaName =
+            selectedObj.area ||
+            "";
+
+
+        deliveryTextElem.innerText =
+            `${selectedObj.area} - ৳ ${selectedObj.fee}`;
+
+
+        updateOrderBillSummary();
+    }
+}
+
+
+/* =========================================================
+   QUANTITY
+========================================================= */
+
+function changeOrderQty(val){
+
+    if(
+        !productLoadFinished ||
+        currentOrderData.stock <= 0
+    ){
+
+        return;
+    }
+
+
+    let newQty =
+        currentOrderData.qty +
+        val;
+
+
+    if(newQty < 1){
+
+        newQty = 1;
+    }
+
+
+    if(
+        newQty >
+        currentOrderData.stock
+    ){
+
+        showToast(
+            `দুঃখিত, এর বেশি স্টক নেই (${currentOrderData.stock} টি উপলব্ধ)!`
+        );
+
+        return;
+    }
+
+
+    currentOrderData.qty =
+        newQty;
+
+
+    document.getElementById(
+        "orderQtyVal"
+    ).innerText =
+        newQty;
+
+
+    updateOrderBillSummary();
+}
+
+
+/* =========================================================
+   BILL
+========================================================= */
+
+function updateOrderBillSummary(){
+
+    const subtotal =
+        currentOrderData.priceNum *
+        currentOrderData.qty;
+
+
+    const deliveryFee =
+        currentOrderData.selectedFee;
+
+
+    const grandTotal =
+        subtotal +
+        deliveryFee;
+
+
+    document.getElementById(
+        "summarySubtotal"
+    ).innerText =
+        "৳ " +
+        subtotal;
+
+
+    document.getElementById(
+        "summaryDeliveryFee"
+    ).innerText =
+        "৳ " +
+        deliveryFee;
+
+
+    document.getElementById(
+        "summaryGrandTotal"
+    ).innerText =
+        "৳ " +
+        grandTotal;
+}
+
+
+/* =========================================================
+   FINAL LIVE STOCK CHECK
+========================================================= */
+
+async function verifyLatestStock(){
+
+    if(!currentOrderData.id){
+
+        return false;
+    }
+
+
+    try{
+
+        const snapshot =
+            await db
+                .ref(
+                    "products/" +
+                    currentOrderData.id +
+                    "/stock"
+                )
+                .once("value");
+
+
+        const latestStock =
+            safeNumber(
+                snapshot.val()
+            );
+
+
+        currentOrderData.stock =
+            latestStock;
+
+
+        document.getElementById(
+            "modalStockInfo"
+        ).innerText =
+            latestStock > 0
+                ? "স্টক: " +
+                  latestStock +
+                  " টি"
+                : "স্টক আউট";
+
+
+        if(latestStock <= 0){
+
+            currentOrderData.qty =
+                0;
+
+
+            document.getElementById(
+                "orderQtyVal"
+            ).innerText =
+                "0";
+
+
+            updateOrderBillSummary();
+
+
+            return false;
+        }
+
+
+        if(
+            currentOrderData.qty >
+            latestStock
+        ){
+
+            currentOrderData.qty =
+                latestStock;
+
+
+            document.getElementById(
+                "orderQtyVal"
+            ).innerText =
+                latestStock;
+
+
+            updateOrderBillSummary();
+
+
+            showToast(
+                `স্টক পরিবর্তন হয়েছে। সর্বোচ্চ ${latestStock} টি অর্ডার করা যাবে।`
+            );
+
+
+            return false;
+        }
+
+
+        return true;
+
+
+    }catch(error){
+
+        console.error(
+            "Latest stock check error:",
+            error
+        );
+
+
+        return false;
+    }
+}
+
+
+/* =========================================================
+   FORM SUBMIT
+========================================================= */
+
+document
+    .getElementById(
+        "orderForm"
+    )
+    .addEventListener(
+        "submit",
+        async function(e){
+
+            e.preventDefault();
+
+
+            if(submittingOrder){
+
+                return;
+            }
+
+
+            if(
+                !currentOrderData.id ||
+                !productLoadFinished
+            ){
+
+                showToast(
+                    "সঠিক পণ্য নির্বাচন করা হয়নি!"
+                );
+
+                return;
+            }
+
+
+            const division =
+                document.getElementById(
+                    "selectDivision"
+                ).value;
+
+
+            const district =
+                document.getElementById(
+                    "selectDistrict"
+                ).value;
+
+
+            const upazila =
+                document.getElementById(
+                    "selectUpazila"
+                ).value;
+
+
+            const exactAddress =
+                document.getElementById(
+                    "exactAddress"
+                ).value.trim();
+
+
+            const customerName =
+                document.getElementById(
+                    "custName"
+                ).value.trim();
+
+
+            const phone =
+                document.getElementById(
+                    "custPhone"
+                ).value.trim();
+
+
+            if(
+                !division ||
+                !district ||
+                !upazila
+            ){
+
+                showToast(
+                    "দয়া করে বিভাগ, জেলা ও উপজেলা সিলেক্ট করুন!"
+                );
+
+                return;
+            }
+
+
+            if(!exactAddress){
+
+                showToast(
+                    "দয়া করে এক্সাক্ট ঠিকানা দিন!"
+                );
+
+                return;
+            }
+
+
+            if(!customerName){
+
+                showToast(
+                    "দয়া করে আপনার নাম দিন!"
+                );
+
+                return;
+            }
+
+
+            if(
+                !/^01[0-9]{9}$/.test(
+                    phone
+                )
+            ){
+
+                showToast(
+                    "দয়া করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন!"
+                );
+
+                return;
+            }
+
+
+            if(
+                currentOrderData.qty < 1
+            ){
+
+                showToast(
+                    "সঠিক quantity নির্বাচন করুন!"
+                );
+
+                return;
+            }
+
+
+            submittingOrder =
+                true;
+
+
+            const submitButton =
+                document.getElementById(
+                    "submitOrderBtn"
+                );
+
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> যাচাই করা হচ্ছে...';
+
+
+            const stockOK =
+                await verifyLatestStock();
+
+
+            if(!stockOK){
+
+                submittingOrder =
+                    false;
+
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.innerHTML =
+                    '<i class="fa-solid fa-arrow-right"></i> পরবর্তী ধাপ (পেমেন্ট)';
+
+
+                return;
+            }
+
+
+            const subtotal =
+                currentOrderData.priceNum *
+                currentOrderData.qty;
+
+
+            const deliveryFee =
+                currentOrderData.selectedFee;
+
+
+            const grandTotal =
+                subtotal +
+                deliveryFee;
+
+
+            const checkoutTempData = {
+
+                productId:
+                    String(
+                        currentOrderData.id
+                    ),
+
+                productName:
+                    currentOrderData.name,
+
+                quantity:
+                    currentOrderData.qty,
+
+                price:
+                    currentOrderData.priceText,
+
+                priceNum:
+                    currentOrderData.priceNum,
+
+                subtotal:
+                    subtotal,
+
+                deliveryFee:
+                    deliveryFee,
+
+                deliveryArea:
+                    currentOrderData.selectedAreaName,
+
+                grandTotal:
+                    grandTotal,
+
+                customerName:
+                    customerName,
+
+                customerPhone:
+                    phone,
+
+                customerAddress:
+                    `বাসা/এক্সাক্ট: ${exactAddress}, উপজেলা/থানা: ${upazila}, জেলা: ${district}, বিভাগ: ${division}`,
+
+                division:
+                    division,
+
+                district:
+                    district,
+
+                upazila:
+                    upazila,
+
+                stockAtCheckout:
+                    currentOrderData.stock,
+
+                stockDeducted:
+                    false,
+
+                createdAt:
+                    Date.now()
+            };
+
+
+            try{
+
+                localStorage.setItem(
+                    "pending_checkout_order",
+                    JSON.stringify(
+                        checkoutTempData
+                    )
+                );
+
+
+                submitButton.innerHTML =
+                    '<i class="fa-solid fa-arrow-right"></i> পেমেন্টে যাওয়া হচ্ছে...';
+
+
+                window.location.href =
+                    "payment.html";
+
+
+            }catch(error){
+
+                console.error(
+                    "Checkout save error:",
+                    error
+                );
+
+
+                submittingOrder =
+                    false;
+
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.innerHTML =
+                    '<i class="fa-solid fa-arrow-right"></i> পরবর্তী ধাপ (পেমেন্ট)';
+
+
+                showToast(
+                    "Checkout তথ্য সংরক্ষণ করা যায়নি!"
+                );
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   DELIVERY CACHE LOAD
+========================================================= */
+
+function loadDeliveryCache(){
+
+    try{
+
+        const cached =
+            localStorage.getItem(
+                DELIVERY_CACHE_KEY
+            );
+
+
+        const cacheTime =
+            parseInt(
+                localStorage.getItem(
+                    DELIVERY_CACHE_TIME_KEY
+                ) || "0",
+                10
+            );
+
+
+        if(
+            !cached ||
+            !cacheTime
+        ){
+
+            return false;
+        }
+
+
+        if(
+            Date.now() -
+            cacheTime >
+            DELIVERY_CACHE_DURATION
+        ){
+
+            return false;
+        }
+
+
+        const parsed =
+            JSON.parse(
+                cached
+            );
+
+
+        if(
+            !Array.isArray(parsed)
+        ){
+
+            return false;
+        }
+
+
+        deliveryChargesList =
+            parsed;
+
+
+        checkAddressForAutoDelivery();
+
+
+        return true;
+
+
+    }catch(error){
+
+        console.warn(
+            "Delivery cache error:",
+            error
+        );
+
+
+        return false;
+    }
+}
+
+
+/* =========================================================
+   DELIVERY CACHE SAVE
+========================================================= */
+
+function saveDeliveryCache(data){
+
+    try{
+
+        localStorage.setItem(
+            DELIVERY_CACHE_KEY,
+            JSON.stringify(data)
+        );
+
+
+        localStorage.setItem(
+            DELIVERY_CACHE_TIME_KEY,
+            String(
+                Date.now()
+            )
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Delivery cache save error:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   DELIVERY LISTENER
+========================================================= */
+
+function startDeliveryListener(){
+
+    if(deliveryListenerStarted){
+
+        return;
+    }
+
+
+    deliveryListenerStarted =
+        true;
+
+
+    db.ref(
+        "deliveryCharges"
+    ).on(
+        "value",
+        snapshot => {
+
+            const data =
+                snapshot.val();
+
+
+            if(data){
+
+                deliveryChargesList =
+                    Object.keys(data)
+                        .map(
+                            key => ({
+
+                                id:key,
+
+                                ...(data[key] || {})
+
+                            })
+                        );
+
+            }else{
+
+                deliveryChargesList = [
+
+                    {
+                        area:
+                            "ঢাকার ভিতরে",
+
+                        fee:60
+                    },
+
+                    {
+                        area:
+                            "ঢাকার বাইরে",
+
+                        fee:120
+                    }
+
+                ];
+            }
+
+
+            saveDeliveryCache(
+                deliveryChargesList
+            );
+
+
+            checkAddressForAutoDelivery();
+        },
+        error => {
+
+            console.error(
+                "Delivery Firebase error:",
+                error
+            );
+
+
+            if(
+                deliveryChargesList.length === 0
+            ){
+
+                deliveryChargesList = [
+
+                    {
+                        area:
+                            "ঢাকার ভিতরে",
+
+                        fee:60
+                    },
+
+                    {
+                        area:
+                            "ঢাকার বাইরে",
+
+                        fee:120
+                    }
+
+                ];
+
+                checkAddressForAutoDelivery();
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+document
+    .getElementById(
+        "selectDivision"
+    )
+    .addEventListener(
+        "change",
+        loadDistricts
+    );
+
+
+document
+    .getElementById(
+        "selectDistrict"
+    )
+    .addEventListener(
+        "change",
+        loadUpazilas
+    );
+
+
+document
+    .getElementById(
+        "selectUpazila"
+    )
+    .addEventListener(
+        "change",
+        checkAddressForAutoDelivery
+    );
+
+
+document
+    .getElementById(
+        "minusQtyBtn"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            changeOrderQty(-1);
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "plusQtyBtn"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            changeOrderQty(1);
+
+        }
+    );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadDeliveryCache();
+
+        setupCheckoutPage();
+
+        startDeliveryListener();
+
+    }
+);
+
+
+/* =========================================================
+   PAGE VISIBILITY
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function(){
+
+        if(
+            document.visibilityState ===
+            "visible"
+        ){
+
+            checkAddressForAutoDelivery();
+        }
+    }
+);
+
+</script>
+
+</body>
+</html>
