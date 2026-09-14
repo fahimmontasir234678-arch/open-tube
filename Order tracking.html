@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Track & History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; -webkit-tap-highlight-color:transparent; }
+        body{ background:#e0e5ec; color:#2c3e50; line-height:1.6; display:flex; justify-content:center; align-items:center; min-height:100vh; padding: 1rem; }
+        .container{ max-width:500px; width:100%; display:flex; flex-direction:column; gap:1.5rem; }
+        .track-card{ background:#e0e5ec; padding:1.5rem; border-radius:20px; box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff; }
+        .form-group{ margin-bottom:1rem; }
+        .form-group label{ display:block; margin-bottom:.3rem; font-weight:700; font-size:.82rem; color:#2c3e50; }
+        .form-group input{ width:100%; padding:.75rem; background:#e0e5ec; border:none; border-radius:12px; font-size:.9rem; color:#2c3e50; box-shadow: inset 3px 3px 6px #b8bec9, inset -3px -3px 6px #ffffff; outline:none; }
+        .neumorphic-btn{ background:linear-gradient( 145deg, #eef3f8, #d7dee7 ); color:#2563eb; font-size:.85rem; font-weight:bold; padding:10px 16px; border:1px solid rgba(255,255,255,.75); border-radius:14px; cursor:pointer; box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff; transition: transform .22s ease, box-shadow .22s ease; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+        .neumorphic-btn:hover{ transform:translateY(-2px); box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff; }
+        .neumorphic-btn:active{ transform:scale(.96); box-shadow: inset 3px 3px 6px #b8bec9, inset -3px -3px 6px #ffffff; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- ১. গ্রাহকের নিজস্ব অর্ডার হিস্ট্রি সেকশন -->
+        <div class="track-card" id="myHistoryCard" style="display:none;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem">
+                <div style="width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow: inset 3px 3px 6px #b8bec9, inset -3px -3px 6px #ffffff">
+                    <i class="fa-solid fa-clock-rotate-left" style="color:#2563eb; font-size:1.1rem"></i>
+                </div>
+                <h3 style="color:#1e293b; font-weight:800">আপনার অর্ডার হিস্ট্রি</h3>
+            </div>
+            <div id="myHistoryBox"></div>
+        </div>
+
+        <!-- ২. অর্ডার ট্র্যাকিং ও সার্চ সেকশন -->
+        <div class="track-card">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:1.2rem">
+                <div style="width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow: inset 3px 3px 6px #b8bec9, inset -3px -3px 6px #ffffff">
+                    <i class="fa-solid fa-truck-fast" style="color:#2563eb; font-size:1.1rem"></i>
+                </div>
+                <h3 style="color:#1e293b; font-weight:800">অর্ডার ট্র্যাকিং</h3>
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem">
+                <label>ট্র্যাকিং আইডি বা মোবাইল নম্বর</label>
+                <div style="display:flex; gap:8px">
+                    <input type="text" id="trackInputId" placeholder="TRK-XXXXXX অথবা মোবাইল" style="flex:1">
+                    <button class="neumorphic-btn" style="color:#2563eb; flex:unset;" onclick="searchOrderTracking()">
+                        <i class="fa-solid fa-search"></i> খুঁজুন
+                    </button>
+                </div>
+            </div>
+
+            <div id="trackingResultBox"></div>
+        </div>
+
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig={
+            apiKey: "AIzaSyB4t_odwE-4-Xy04VBbftdO4vL3dykK7WE",
+            authDomain: "save-9a2b1.firebaseapp.com",
+            databaseURL: "https://save-9a2b1-default-rtdb.firebaseio.com",
+            projectId: "save-9a2b1",
+            storageBucket: "save-9a2b1.firebasestorage.app",
+            messagingSenderId: "764677352870",
+            appId: "1:764677352870:web:64574453e074a30a843367",
+            measurementId: "G-KV0WQWZY0H"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        // পুরনো বা ১ সপ্তাহ পার হওয়া ডেলিভারড/বাতিল অর্ডার স্বয়ংক্রিয়ভাবে মুছে ফেলার ফাংশন
+        function cleanUpOldOrders(allData) {
+            const currentTime = new Date().getTime();
+            const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
+
+            Object.keys(allData).forEach(key => {
+                const order = allData[key];
+                if (order && order.orderTime) {
+                    let currentStatus = order.orderStatus || order.status || "Pending";
+                    
+                    if (currentStatus === "Delivered" || currentStatus === "Cancelled") {
+                        let orderTime = new Date(order.orderTime).getTime();
+                        if (currentTime - orderTime > oneWeekInMillis) {
+                            db.ref("orders/" + key).remove();
+                        }
+                    }
+                }
+            });
+        }
+
+        // স্ট্যাটাস অনুযায়ী সর্টিং প্রায়োরিটি নির্ধারণ (পেন্ডিং/প্রসেসিং/শিপড উপরে, সম্পন্ন/বাতিল নিচে)
+        function getStatusPriority(status) {
+            if (status === "Delivered" || status === "Cancelled") {
+                return 2; // নিচে থাকবে
+            }
+            return 1; // ওপরে থাকবে (Pending, Processing, Shipped ইত্যাদি)
+        }
+
+        function createTrackingCard(order){
+            let currentStatus = order.orderStatus || order.status || "Pending";
+            let statusText = "পেন্ডিং (অপেক্ষমাণ)";
+            let statusBg = "#d97706";
+
+            if(currentStatus === "Processing") {
+                statusText = "প্রসেসিং";
+                statusBg = "#2563eb";
+            } else if(currentStatus === "Shipped") {
+                statusText = "শিপড";
+                statusBg = "#0284c7";
+            } else if(currentStatus === "Delivered") {
+                statusText = "সম্পন্ন";
+                statusBg = "#16a34a";
+            } else if(currentStatus === "Cancelled") {
+                statusText = "বাতিল";
+                statusBg = "#dc2626";
+            }
+
+            let formattedDate = order.orderTime ? new Date(order.orderTime).toLocaleString('bn-BD') : 'N/A';
+
+            return `
+                <div style="background:#e0e5ec; padding:12px; border-radius:12px; box-shadow: inset 3px 3px 6px #b8bec9, inset -3px -3px 6px #ffffff; font-size:.82rem; margin-bottom:8px">
+                    <div style="display:flex; justify-content:space-between; font-weight:bold; color:#2563eb; margin-bottom:6px">
+                        <span>${order.trackingId}</span>
+                        <span style="background:${statusBg}; color:white; padding:2px 8px; border-radius:6px; font-size:.72rem">${statusText}</span>
+                    </div>
+                    <p style="margin-bottom:2px"><strong>পণ্য:</strong> ${order.productName || 'N/A'}</p>
+                    <p style="margin-bottom:2px"><strong>মূল্য:</strong> ৳ ${order.totalAmount || 0}</p>
+                    <p style="margin-bottom:2px"><strong>ঠিকানা:</strong> ${order.customerAddress || 'N/A'}</p>
+                    <p><strong>তারিখ:</strong> ${formattedDate}</p>
+                </div>
+            `;
+        }
+
+        // ইউজারের নিজস্ব হিস্ট্রি লোড করার ফাংশন (ওপরের কার্ড)
+        function loadMyDeviceOrderHistory(){
+            let mySavedOrders = JSON.parse(localStorage.getItem("my_shop_orders")) || [];
+            const historyCard = document.getElementById("myHistoryCard");
+            const historyBox = document.getElementById("myHistoryBox");
+
+            if(mySavedOrders.length === 0){
+                historyCard.style.display = "none";
+                return;
+            }
+
+            historyCard.style.display = "block";
+            historyBox.innerHTML = `<p style="color:#64748b; font-size:0.8rem; text-align:center;">লোড হচ্ছে...</p>`;
+
+            db.ref("orders").once("value", snapshot => {
+                const allData = snapshot.val();
+                if(!allData){
+                    historyBox.innerHTML = `<p style="color:#64748b; font-size:0.8rem; text-align:center;">কোনো অর্ডার পাওয়া যায়নি।</p>`;
+                    return;
+                }
+
+                cleanUpOldOrders(allData);
+
+                let myOrderKeys = mySavedOrders.map(o => o.trackingId);
+                let matchedOrders = [];
+
+                Object.keys(allData).forEach(key => {
+                    const order = allData[key];
+                    if(order && myOrderKeys.includes(order.trackingId)){
+                        matchedOrders.push(order);
+                    }
+                });
+
+                // স্ট্যাটাস ও সময় অনুযায়ী অর্ডার সর্টিং (অ্যাক্টিভ অর্ডারগুলো উপরে, ডেলিভারড/ক্যান্সেলড নিচে)
+                matchedOrders.sort((a, b) => {
+                    let statusA = a.orderStatus || a.status || "Pending";
+                    let statusB = b.orderStatus || b.status || "Pending";
+
+                    let pA = getStatusPriority(statusA);
+                    let pB = getStatusPriority(statusB);
+
+                    if (pA !== pB) {
+                        return pA - pB; // প্রাইরিটি অনুযায়ী (1 আগে, 2 পরে)
+                    }
+
+                    // যদি স্ট্যাটাস একই ক্যাটাগরির হয়, তবে নতুন অর্ডারগুলো আগে দেখাবে
+                    let timeA = a.orderTime ? new Date(a.orderTime).getTime() : 0;
+                    let timeB = b.orderTime ? new Date(b.orderTime).getTime() : 0;
+                    return timeB - timeA;
+                });
+
+                let html = `<div style="display:flex; flex-direction:column; gap:8px; max-height:250px; overflow-y:auto">`;
+                let found = false;
+
+                matchedOrders.forEach(order => {
+                    found = true;
+                    html += createTrackingCard(order);
+                });
+
+                html += "</div>";
+                historyBox.innerHTML = found ? html : `<p style="color:#64748b; font-size:0.8rem; text-align:center;">এই ডিভাইসে কোনো অর্ডার পাওয়া যায়নি।</p>`;
+            });
+        }
+
+        // ট্র্যাকিং আইডি বা মোবাইল নম্বর দিয়ে সার্চ করার ফাংশন (নিচের সার্চ বক্স)
+        function searchOrderTracking(){
+            const inputVal = document.getElementById("trackInputId").value.trim();
+            const resultBox = document.getElementById("trackingResultBox");
+
+            if(!inputVal){
+                resultBox.innerHTML = `<p style="color:#dc2626; text-align:center; font-size:0.85rem; margin-top:10px">দয়া করে ট্র্যাকিং আইডি অথবা মোবাইল নম্বর লিখুন।</p>`;
+                return;
+            }
+
+            resultBox.innerHTML = `<p style="color:#64748b; text-align:center; font-size:0.85rem; margin-top:10px">খোঁজা হচ্ছে...</p>`;
+
+            db.ref("orders").once("value", snapshot => {
+                const data = snapshot.val();
+                if(!data){
+                    resultBox.innerHTML = `<p style="color:#dc2626; text-align:center; font-size:0.85rem; margin-top:10px">কোনো অর্ডার পাওয়া যায়নি!</p>`;
+                    return;
+                }
+
+                cleanUpOldOrders(data);
+
+                let matchedOrders = [];
+                Object.keys(data).forEach(key => {
+                    const order = data[key];
+                    if(order && (order.trackingId === inputVal || order.customerPhone === inputVal)){
+                        matchedOrders.push(order);
+                    }
+                });
+
+                if(matchedOrders.length === 0){
+                    resultBox.innerHTML = `<p style="color:#dc2626; text-align:center; font-size:0.85rem; margin-top:10px">এই ট্র্যাকিং আইডি বা নম্বরের কোনো অর্ডার পাওয়া যায়নি!</p>`;
+                    return;
+                }
+
+                // সার্চ রেজাল্টের ক্ষেত্রেও একই সর্টিং প্রয়োগ করা হলো
+                matchedOrders.sort((a, b) => {
+                    let statusA = a.orderStatus || a.status || "Pending";
+                    let statusB = b.orderStatus || b.status || "Pending";
+
+                    let pA = getStatusPriority(statusA);
+                    let pB = getStatusPriority(statusB);
+
+                    if (pA !== pB) {
+                        return pA - pB;
+                    }
+
+                    let timeA = a.orderTime ? new Date(a.orderTime).getTime() : 0;
+                    let timeB = b.orderTime ? new Date(b.orderTime).getTime() : 0;
+                    return timeB - timeA;
+                });
+
+                let html = `<div style="display:flex; flex-direction:column; gap:8px; max-height:250px; overflow-y:auto; margin-top:10px">`;
+                matchedOrders.forEach(order => {
+                    html += createTrackingCard(order);
+                });
+                html += "</div>";
+                resultBox.innerHTML = html;
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadMyDeviceOrderHistory();
+        });
+    </script>
+</body>
+</html>
